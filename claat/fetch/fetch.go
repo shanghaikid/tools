@@ -254,7 +254,7 @@ func (f *Fetcher) slurpBytes(codelabSrc, dir, imgURL string) (string, error) {
 	// images can be local in Markdown cases or remote.
 	// Only proceed a simple copy on local reference.
 	var b []byte
-	var ext string
+	// var ext string
 	u, err := url.Parse(imgURL)
 	if err != nil {
 		return "", err
@@ -274,18 +274,20 @@ func (f *Fetcher) slurpBytes(codelabSrc, dir, imgURL string) (string, error) {
 		if b, err = ioutil.ReadFile(imgURL); err != nil {
 			return "", err
 		}
-		ext = filepath.Ext(imgURL)
+		// ext = filepath.Ext(imgURL)
 	} else {
 		if b, err = f.slurpRemoteBytes(u.String(), 5); err != nil {
-			return "", fmt.Errorf("Error downloading image at %s: %v", u.String(), err)
+			return "", fmt.Errorf("error downloading image at %s: %v", u.String(), err)
 		}
-		if ext, err = imgExtFromBytes(b); err != nil {
-			return "", fmt.Errorf("Error reading image type at %s: %v", u.String(), err)
-		}
+		// if ext, err = imgExtFromBytes(b); err != nil {
+		// 	return "", fmt.Errorf("error reading image type at %s: %v", u.String(), err)
+		// }
 	}
 
-	crc := crc64.Checksum(b, f.crcTable)
-	file := fmt.Sprintf("%x%s", crc, ext)
+	// crc := crc64.Checksum(b, f.crcTable)
+	file := filepath.Base(imgURL)
+	// file := fmt.Sprintf("%s", base)
+	//fmt.Sprintf("%x%s", crc, ext)
 	dst := filepath.Join(dir, file)
 	return file, ioutil.WriteFile(dst, b, 0644)
 }
